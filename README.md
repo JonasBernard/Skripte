@@ -21,7 +21,7 @@ Zahlenbereich auf die Bedingung für eine autobiographische Zahl hin überprüft
 `nils(zahl)` und `jonas(zahl)` sind Funktionen, die auf verschiedene Weise aus einer Zahl eine Liste ihrer Stellen erzeugen. Um die Laufzeit der beiden
 Ansätze zu überprüfen, lässt die Funktion `speed_test()` 1.000.000 zufällig generierte Zahlen auf beide Algorithmen los, und vergleicht die Laufzeiten.
 
-> Inspiriert durch [DorFusch](https://youtu.be/fKRqyh4Hh4U)
+> Inspiriert durch [DorFusch](https://youtu.be/fKRqyh4Hh4U).
 
 ## FizzBuzz
 
@@ -30,7 +30,7 @@ durch "Buzz" ersetzt wird. Sobald eine Zahl durch sowohl 3 als auch 5 teilbar is
 
 `fizzbuzz.py` gibt die gesagten Zahlen bzw. Wörter nach diesen Reglen aus.
 
-> Inspiriert durch [Tom Scott](https://youtu.be/QPZ0pIK_wsc)
+> Inspiriert durch [Tom Scott](https://youtu.be/QPZ0pIK_wsc).
 
 ## Sherlock
 
@@ -41,10 +41,16 @@ Welche ist nun nach 48 die nächstgrößere Zahl, die auf diese Weise besonders 
 
 Das Skript `sherlock.py` berechnet die Antwort auf diese Frage.
 
-> Inspiriert durch [Tim Dedopulos' "Sherlock Holmes' Rätseluniversum"](https://www.thalia.de/shop/home/artikeldetails/ID64483778.html)
+> Inspiriert durch [Tim Dedopulos' "Sherlock Holmes' Rätseluniversum"](https://www.thalia.de/shop/home/artikeldetails/ID64483778.html).
 
 ## Sudoku
 
 Sudokus machen vielen Manschen Spaß, aber auch Computern. In `sudoku.py` findet sich ein rekursives Skript, welches die Lösungen von Sudokus ermittelt.
 
-> Inspiriert durch [Computerphile](https://www.youtube.com/user/Computerphile/)
+> Inspiriert durch [Computerphile](https://www.youtube.com/user/Computerphile/).
+
+## Zahlen quadrieren
+
+Anstatt eine Zahl n mit sich selbst zu multiplizieren, um sie zu quadrieren, kann man sie auch zur Basis b
+mit b = n schreiben und die Anzahl der Nullen verdoppeln. Das diese Methode jedoch höchst ineffizient ist, zeigt
+das Sktipt `zahlen_quadrieren.py`.
