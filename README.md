@@ -45,7 +45,7 @@ Das Skript `sherlock.py` berechnet die Antwort auf diese Frage.
 
 ## Sudoku
 
-Sudokus machen vielen Manschen Spaß, aber auch Computern. In `sudoku.py` findet sich ein rekursives Skript, welches die Lösungen von Sudokus ermittelt.
+Sudokus machen vielen Menschen Spaß, aber auch Computern. In `sudoku.py` findet sich ein rekursives Skript, welches die Lösungen von Sudokus ermittelt.
 
 > Inspiriert durch [Computerphile](https://www.youtube.com/user/Computerphile/).
 
