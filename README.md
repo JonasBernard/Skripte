@@ -49,6 +49,11 @@ Sudokus machen vielen Menschen Spaß, aber auch Computern. In `sudoku.py` findet
 
 > Inspiriert durch [Computerphile](https://www.youtube.com/user/Computerphile/).
 
+## Tic Tac Toe
+
+`tic-tac-toe.py` spielt gegen dich Tic Tac Toe. Ich weiß, dass der Algorithmus verbessert werden kann, aber er
+funktioniert.
+
 ## Zahlen quadrieren
 
 Anstatt eine Zahl n mit sich selbst zu multiplizieren, um sie zu quadrieren, kann man sie auch zur Basis b
