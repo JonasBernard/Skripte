@@ -54,6 +54,12 @@ Sudokus machen vielen Menschen Spaß, aber auch Computern. In `sudoku.py` findet
 `tic-tac-toe.py` spielt gegen dich Tic Tac Toe. Ich weiß, dass der Algorithmus verbessert werden kann, aber er
 funktioniert.
 
+## Vollkommene Zahlen
+
+Vollkommene Zahlen sind natürliche Zahlen, die genau der Summer ihrer eigenen Teiler entspricht. Die Zahl selbst ist dabei selbstverständlich nicht mitgezählt, sonst gäbe es keine vollkommenen Zahlen.
+1 ist bei diesen Überlegungen immer Teil der Summe. 6 ist die kleinste vollkommene Zahl, da sie die Summe aus 1,2 und 3 ist. `vollkommene_zahlen.py` berechnet durch ausprobieren vollkommene Zahlen,
+auch wenn es weitaus effizientere Methoden gibt, als diese. Man kann zum Beispiel alle vollkommenen als Produkt bestimmer Primzahlen und Zweierpotenzen darstellen und umgekehrt so auch vollkommene Zahlen erzeugen.
+
 ## Zahlen quadrieren
 
 Anstatt eine Zahl n mit sich selbst zu multiplizieren, um sie zu quadrieren, kann man sie auch zur Basis b
