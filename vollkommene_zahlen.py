@@ -4,7 +4,7 @@ from operator import add
 
 
 def divisors(n):
-    for d in range(2, int(sqrt(n)+1)):
+    for d in range(2, int(n/2)):
         if n % d == 0:
             yield d
             if d * d != n:
