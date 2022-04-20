@@ -1,6 +1,7 @@
 quadratzahlen = []
 
 
+
 def quadratzahlen_generieren(von, bis):
 	for i in range(von, bis):
 		quadratzahlen.append(i ** 2)
