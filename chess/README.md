@@ -47,3 +47,34 @@ You can split your engine into more files in your folder and import them with `f
   program. Your engine only gets to use `state`.
 
 The placeholder engines ask for moves on the keyboard, so you can play against each other while you're still building.
+
+## Playing against Claude
+
+A Claude Code session can play against your engine. Open a session on this repository and say:
+
+```
+/play-chess jonas
+```
+
+(or just "play chess against jonas", optionally with "as white" or a time control). The skill in
+`.claude/skills/play-chess/SKILL.md` tells Claude the rules: it only sees the judge's output, it doesn't run code
+to find moves, and it doesn't read your engine.
+
+Claude plays through the judge `claude_match.py`, one command per move:
+
+```
+python chess/claude_match.py new jonas --claude-color black   # engine moves first if it's white
+python chess/claude_match.py move Nf6                         # SAN or UCI
+python chess/claude_match.py status
+python chess/claude_match.py resign
+```
+
+After every command it's Claude's turn again: the judge plays Claude's move, runs your engine right away and prints
+the new position as a board diagram, piece lists, FEN, the moves so far and both clocks.
+
+- Default time: 60 minutes for Claude, 5 minutes for the engine (`--claude-time`, `--engine-time`, `--increment`, in seconds).
+- Claude's clock runs from when the position is printed until its next `move` command.
+- A rejected move from Claude counts as a strike. After 3 strikes (`--strikes`) Claude loses.
+  Your engine still loses on its first illegal move.
+- Your engine is loaded fresh for every move in this mode, so it can't keep anything in memory between moves.
+- The running game is stored in `chess/claude_match.json`. Finished games are saved as PGN in `chess/games/`.

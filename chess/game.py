@@ -29,6 +29,11 @@ def square_name(square):
     return f"{FILES[file]}{rank + 1}"
 
 
+def uci(move):
+    start, target, promo = move
+    return square_name(start) + square_name(target) + (promo or "")
+
+
 def color_of(piece):
     if piece == ".":
         return None
@@ -299,7 +304,10 @@ class Game:
         return start, target, promo
 
     def play(self, text):
-        """Validate and play a move given in UCI notation. Raises IllegalMove."""
+        """Validate and play a move given in UCI notation. Raises IllegalMove.
+
+        Returns the move in standard algebraic notation (SAN), e.g. "Nf3".
+        """
         move = self.parse_move(text)
         start = move[0]
         piece = self.board[start[0]][start[1]]
@@ -307,12 +315,76 @@ class Game:
             raise IllegalMove(f"no piece on {square_name(start)}")
         if color_of(piece) != self.turn:
             raise IllegalMove(f"the piece on {square_name(start)} is not yours")
-        if move not in self.legal_moves():
+        legal = self.legal_moves()
+        if move not in legal:
             raise IllegalMove("not a legal move in this position")
+        san = self.san(move, legal)
         self._apply(move)
-        self.moves.append(text.strip().lower())
+        self.moves.append(uci(move))
         key = self._position_key()
         self.repetitions[key] = self.repetitions.get(key, 0) + 1
+        return san
+
+    # ---------- standard algebraic notation (used by the Claude judge) ----------
+
+    def san(self, move, legal=None, suffix=True):
+        """Standard algebraic notation of a legal move: "e4", "Nbd7", "exd5", "O-O", "e8=Q+"."""
+        (r1, f1), (r2, f2), promo = move
+        piece = self.board[r1][f1]
+        kind = piece.upper()
+        if kind == "K" and abs(f2 - f1) == 2:
+            text = "O-O" if f2 == 6 else "O-O-O"
+        else:
+            capture = self.board[r2][f2] != "." or (kind == "P" and (r2, f2) == self.ep)
+            target = square_name((r2, f2))
+            if kind == "P":
+                text = (FILES[f1] + "x" if capture else "") + target
+                if promo:
+                    text += "=" + promo.upper()
+            else:
+                legal = self.legal_moves() if legal is None else legal
+                rivals = [m[0] for m in legal
+                          if m[1] == (r2, f2) and m[0] != (r1, f1) and self.board[m[0][0]][m[0][1]] == piece]
+                hint = ""
+                if rivals:
+                    if all(f != f1 for _, f in rivals):
+                        hint = FILES[f1]
+                    elif all(r != r1 for r, _ in rivals):
+                        hint = str(r1 + 1)
+                    else:
+                        hint = square_name((r1, f1))
+                text = kind + hint + ("x" if capture else "") + target
+        if suffix:
+            after = self._copy()
+            after._apply(move)
+            if after.in_check(after.turn):
+                text += "#" if not after.legal_moves() else "+"
+        return text
+
+    def find_move(self, text):
+        """Accept a move in UCI ("g1f3") or SAN ("Nf3", "exd5", "O-O", "e8=Q"). Returns it in UCI.
+
+        Raises IllegalMove if it doesn't match exactly one legal move.
+        """
+        text = text.strip()
+        legal = self.legal_moves()
+        try:
+            move = self.parse_move(text)
+            if move in legal:
+                return uci(move)
+        except IllegalMove:
+            pass
+
+        def normalize(s):
+            return s.replace("0", "O").translate(str.maketrans("", "", "+#x=!?"))
+
+        wanted = normalize(text)
+        matches = [m for m in legal if normalize(self.san(m, legal, suffix=False)) == wanted]
+        if len(matches) == 1:
+            return uci(matches[0])
+        if len(matches) > 1:
+            raise IllegalMove(f"{text!r} is ambiguous, say which piece moves (e.g. 'Nbd7' or 'R1e2')")
+        raise IllegalMove(f"{text!r} is not a legal move in this position")
 
     # ---------- game end ----------
 
