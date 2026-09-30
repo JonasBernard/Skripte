@@ -65,3 +65,8 @@ auch wenn es weitaus effizientere Methoden gibt, als diese. Man kann zum Beispie
 Anstatt eine Zahl n mit sich selbst zu multiplizieren, um sie zu quadrieren, kann man sie auch zur Basis b
 mit b = n schreiben und die Anzahl der Nullen verdoppeln. Das diese Methode jedoch höchst ineffizient ist, zeigt
 das Sktipt `zahlen_quadrieren.py`.
+
+## Schach
+
+Im Ordner `chess/` treten zwei selbstgeschriebene Schach-Engines gegeneinander an. Die Spiellogik, Zugvalidierung und
+Schachuhr sind vorgegeben, jede\*r schreibt die eigene Engine im eigenen Ordner. Details stehen in `chess/README.md`.
