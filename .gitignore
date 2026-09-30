@@ -1,3 +1,6 @@
 .idea/
 
 venv/
+
+__pycache__/
+chess/claude_match.json

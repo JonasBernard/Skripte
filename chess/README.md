@@ -1,0 +1,83 @@
+# Chess engine competition
+
+Two engines, one game. `main.py` runs the game, `game.py` knows the rules, `clock.py` keeps time.
+Each player writes their engine in their own folder (`jonas/`, `nils/`).
+
+```
+python chess/main.py jonas nils                                   # one game, 5 minutes each
+python chess/main.py jonas nils --time 60 --increment 1 --games 10 --quiet
+```
+
+With `--games`, the colors alternate and the final score is printed at the end.
+
+## Writing an engine
+
+Put a file `engine.py` in your folder with one function:
+
+```python
+def get_move(state):
+    return "e2e4"
+```
+
+`state` is a dict with the current position and the game history. You don't get a list of legal moves.
+You have to work that out yourself:
+
+| key | meaning |
+|---|---|
+| `board` | 8x8 list, `board[rank][file]`. `board[0][0]` is a1, `board[1][4]` is e2. White `PNBRQK`, black `pnbrqk`, empty `.` |
+| `turn` | `"w"` or `"b"`, the color you are playing |
+| `castling` | castling rights still left, e.g. `"KQkq"`, or `""` |
+| `en_passant` | the square you could capture en passant onto, e.g. `"e3"`, or `None` |
+| `halfmove_clock` | half-moves since the last capture or pawn move (draw at 100) |
+| `fullmove_number` | starts at 1, goes up after black moves |
+| `fen` | the same position as a [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string |
+| `moves` | every move of the game so far in UCI notation, oldest first, e.g. `["e2e4", "e7e5"]` |
+| `positions` | FEN of every position so far, starting with the initial one. `positions[-1]` is the current position, handy for spotting repetitions |
+| `time_left` / `opponent_time_left` | seconds left on the clocks |
+
+Return the move in UCI notation: `"g1f3"`, castling as the king move `"e1g1"`, promotion with a suffix `"e7e8n"`
+(without a suffix it promotes to a queen).
+
+You can split your engine into more files in your folder and import them with `from . import helper`.
+
+## Rules
+
+- You lose if you return an illegal move, raise an exception or run out of time. The clock runs while `get_move` is thinking.
+- If you run out of time and your opponent only has a king left, it's a draw.
+- Draws: stalemate, 50-move rule, threefold repetition, insufficient material (only K vs K, K+B vs K, K+N vs K).
+- Fair play: don't import `game.py` or anything from the other player's folder, and don't dig around in the running
+  program. Your engine only gets to use `state`.
+
+The placeholder engines ask for moves on the keyboard, so you can play against each other while you're still building.
+
+## Playing against Claude
+
+A Claude Code session can play against your engine. Open a session on this repository and say:
+
+```
+/play-chess jonas
+```
+
+(or just "play chess against jonas", optionally with "as white" or a time control). The skill in
+`.claude/skills/play-chess/SKILL.md` tells Claude the rules: it only sees the judge's output, it doesn't run code
+to find moves, and it doesn't read your engine.
+
+Claude plays through the judge `claude_match.py`, one command per move:
+
+```
+python chess/claude_match.py new jonas --claude-color black   # engine moves first if it's white
+python chess/claude_match.py move Nf6                         # SAN or UCI
+python chess/claude_match.py status
+python chess/claude_match.py resign
+```
+
+After every command it's Claude's turn again: the judge plays Claude's move, runs your engine right away and prints
+the new position as a board diagram, piece lists, FEN, the moves so far and both clocks.
+
+- Default time: 60 minutes for Claude, 5 minutes for the engine (`--claude-time`, `--engine-time`, `--increment`, in seconds).
+- Claude's clock runs from when the position is printed until its next `move` command.
+- A rejected move from Claude counts as a strike. After 3 strikes (`--strikes`) Claude loses.
+  Your engine still loses on its first illegal move.
+- Your engine is loaded fresh for every move in this mode, so it can't keep anything in memory between moves.
+  It still gets the full history in `state["moves"]` and `state["positions"]`.
+- The running game is stored in `chess/claude_match.json`. Finished games are saved as PGN in `chess/games/`.
