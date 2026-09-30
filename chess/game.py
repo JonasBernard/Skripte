@@ -56,6 +56,7 @@ class Game:
     def __init__(self, fen=START_FEN):
         self._load_fen(fen)
         self.moves = []
+        self.positions = [self.fen()]
         self.repetitions = {self._position_key(): 1}
 
     # ---------- setup / export ----------
@@ -105,6 +106,8 @@ class Game:
             "halfmove_clock": self.halfmove,
             "fullmove_number": self.fullmove,
             "fen": self.fen(),
+            "moves": list(self.moves),
+            "positions": list(self.positions),
         }
 
     def __str__(self):
@@ -321,6 +324,7 @@ class Game:
         san = self.san(move, legal)
         self._apply(move)
         self.moves.append(uci(move))
+        self.positions.append(self.fen())
         key = self._position_key()
         self.repetitions[key] = self.repetitions.get(key, 0) + 1
         return san

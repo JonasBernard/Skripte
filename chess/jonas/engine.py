@@ -13,6 +13,9 @@ state = {
     "halfmove_clock": moves since the last capture or pawn move (draw at 100),
     "fullmove_number": starts at 1, goes up after black moves,
     "fen": the same position as a FEN string,
+    "moves": every move of the game so far in UCI notation, oldest first, e.g. ["e2e4", "e7e5"],
+    "positions": FEN of every position so far, starting with the initial one;
+                 positions[-1] is the current position (useful to spot repetitions),
     "time_left": your remaining seconds,
     "opponent_time_left": your opponent's remaining seconds,
 }

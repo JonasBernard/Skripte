@@ -19,7 +19,7 @@ def get_move(state):
     return "e2e4"
 ```
 
-`state` is a dict with the current position and nothing else. You don't get a list of legal moves.
+`state` is a dict with the current position and the game history. You don't get a list of legal moves.
 You have to work that out yourself:
 
 | key | meaning |
@@ -31,6 +31,8 @@ You have to work that out yourself:
 | `halfmove_clock` | half-moves since the last capture or pawn move (draw at 100) |
 | `fullmove_number` | starts at 1, goes up after black moves |
 | `fen` | the same position as a [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) string |
+| `moves` | every move of the game so far in UCI notation, oldest first, e.g. `["e2e4", "e7e5"]` |
+| `positions` | FEN of every position so far, starting with the initial one. `positions[-1]` is the current position, handy for spotting repetitions |
 | `time_left` / `opponent_time_left` | seconds left on the clocks |
 
 Return the move in UCI notation: `"g1f3"`, castling as the king move `"e1g1"`, promotion with a suffix `"e7e8n"`
@@ -77,4 +79,5 @@ the new position as a board diagram, piece lists, FEN, the moves so far and both
 - A rejected move from Claude counts as a strike. After 3 strikes (`--strikes`) Claude loses.
   Your engine still loses on its first illegal move.
 - Your engine is loaded fresh for every move in this mode, so it can't keep anything in memory between moves.
+  It still gets the full history in `state["moves"]` and `state["positions"]`.
 - The running game is stored in `chess/claude_match.json`. Finished games are saved as PGN in `chess/games/`.
